@@ -15,10 +15,17 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET)', () => {
+  it('/api/v1/items (GET)', () => {
     return request(app.getHttpServer())
-      .get('/')
+      .get('/api/v1/items')
       .expect(200)
-      .expect('Hello World!');
+      .expect([]);
+  });
+
+  it('/api/v1/items (POST) add todo item', () => {
+    return request(app.getHttpServer())
+      .post('/api/v1/items')
+      .send({ id: '1', title: 'first' })
+      .expect(201);
   });
 });
