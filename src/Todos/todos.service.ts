@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { TodosRepository } from './todos.repository';
-import { TodoItem } from './types';
+import { TodosRepository } from './repositories/todos.repository';
+import { TodoItem } from './interfaces/todos.interface';
 
 @Injectable()
 export class TodosService {
@@ -24,5 +24,17 @@ export class TodosService {
 
   addNewItem(item: TodoItem): void {
     this.todosRepository.addItem(item);
+  }
+
+  replaceItem(index: number, item: TodoItem): void {
+    this.todosRepository.replaceItem(index, item);
+  }
+
+  updateItem(index: number, title: Partial<TodoItem>): void {
+    this.todosRepository.updateItem(index, title);
+  }
+
+  deleteItem(index: number): void {
+    this.todosRepository.deleteItem(index);
   }
 }
