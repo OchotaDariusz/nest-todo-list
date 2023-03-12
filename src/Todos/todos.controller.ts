@@ -46,8 +46,8 @@ export class TodosController {
 
   @Patch('/:index')
   @HttpCode(200)
-  patchItem(@Param() params, @Body() title: Partial<TodoItem>): void {
-    this.todosService.updateItem(params.index, title);
+  patchItem(@Param() params, @Body() partialItem: Partial<TodoItem>): void {
+    this.todosService.updateItem(params.index, partialItem);
   }
 
   @Delete('/:index')

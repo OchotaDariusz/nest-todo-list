@@ -1,6 +1,6 @@
 {
   "name": "todo-list",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Simple NestJS REST API",
   "author": "Dariusz Ochota",
   "private": true,

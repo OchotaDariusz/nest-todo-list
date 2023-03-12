@@ -33,8 +33,8 @@ export class TodosRepository {
     this.data[index] = item;
   }
 
-  updateItem(index: number, title: Partial<TodoItem>): void {
-    this.data[index] = { ...this.data[index], ...title };
+  updateItem(index: number, partialItem: Partial<TodoItem>): void {
+    this.data[index] = { ...this.data[index], ...partialItem };
   }
 
   deleteItem(index: number): void {

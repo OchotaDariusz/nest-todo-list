@@ -30,8 +30,8 @@ export class TodosService {
     this.todosRepository.replaceItem(index, item);
   }
 
-  updateItem(index: number, title: Partial<TodoItem>): void {
-    this.todosRepository.updateItem(index, title);
+  updateItem(index: number, partialItem: Partial<TodoItem>): void {
+    this.todosRepository.updateItem(index, partialItem);
   }
 
   deleteItem(index: number): void {
