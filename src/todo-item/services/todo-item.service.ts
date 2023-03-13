@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TodoItemEntity } from '../entities';
@@ -16,19 +16,32 @@ export class TodoItemService {
     return this.todosRepository.find();
   }
 
-  getItemById(id: string): Promise<TodoItem> {
-    return this.todosRepository.findOneBy({ id });
+  async getItemById(id: string): Promise<TodoItem> {
+    const todoItem = await this.todosRepository.findOneBy({ id });
+    if (!todoItem) {
+      throw new NotFoundException("Can't find that item.");
+    }
+    return todoItem;
   }
 
   async addNewItem(item: TodoItemDto): Promise<TodoItem> {
     return await this.todosRepository.save(item);
   }
 
-  async updateItem(id: string, item: TodoItemDto): Promise<void> {
-    await this.todosRepository.save({ id, title: item.title });
+  async updateItem(id: string, item: TodoItemDto): Promise<TodoItem> {
+    const todoItem = await this.todosRepository.findOneBy({ id });
+    if (!todoItem) {
+      throw new NotFoundException("Can't find item to update.");
+    }
+    todoItem.title = item.title;
+    return await this.todosRepository.save(todoItem);
   }
 
   async deleteItem(id: string): Promise<void> {
+    const todoItem = await this.todosRepository.findOneBy({ id });
+    if (!todoItem) {
+      throw new NotFoundException("Can't find item to delete.");
+    }
     await this.todosRepository.delete(id);
   }
 }
