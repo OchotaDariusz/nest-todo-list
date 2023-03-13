@@ -1,132 +1,102 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { TodosModule } from '../src/Todos/todos.module';
+import { TodoItemModule } from '../src/todo-item/todo-item.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import entities from '../src/todo-item/entities';
 
-describe('TodosController (e2e)', () => {
+describe('TodoitemsController (e2e)', () => {
   let app: INestApplication;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [TodosModule],
+      imports: [
+        ConfigModule.forRoot({ isGlobal: true }),
+        TypeOrmModule.forRootAsync({
+          imports: [ConfigModule],
+          useFactory: (configService: ConfigService) => ({
+            type: 'postgres',
+            host: configService.get('DB_HOST'),
+            port: +configService.get('DB_PORT'),
+            username: configService.get('DB_USER'),
+            password: configService.get('DB_PASSWORD'),
+            database: configService.get('DB_NAME'),
+            entities,
+            synchronize: true,
+          }),
+          inject: [ConfigService],
+        }),
+        TodoItemModule,
+      ],
     }).compile();
 
     app = moduleFixture.createNestApplication();
     await app.init();
   });
 
-  it('/api/v1/todos (GET) - response 200 status', () => {
-    return request(app.getHttpServer()).get('/api/v1/todos').expect(200);
+  it('/api/v1/todo-item (GET) - response 200 status', () => {
+    return request(app.getHttpServer()).get('/api/v1/todo-item').expect(200);
   });
 
-  it('/api/v1/todos (GET) - should return empty list', () => {
-    return request(app.getHttpServer()).get('/api/v1/todos').expect([]);
-  });
-
-  it('/api/v1/todos (POST) add todo item - response 201 status', () => {
+  it('/api/v1/todo-item (POST) add todo item - response 201 status', () => {
     return request(app.getHttpServer())
-      .post('/api/v1/todos')
-      .send({ id: '1', title: 'first' })
+      .post('/api/v1/todo-item')
+      .send({ title: 'first' })
       .expect(201);
   });
 
-  it('/api/v1/todos (POST) add todo item - item is added', () => {
+  it('/api/v1/todo-item (POST) add todo item - item is added', () => {
     return request(app.getHttpServer())
-      .post('/api/v1/todos')
-      .send({ id: '1', title: 'first' })
-      .then(() => {
+      .post('/api/v1/todo-item')
+      .send({ title: 'first' })
+      .then((response) => {
         return request(app.getHttpServer())
-          .get('/api/v1/todos/0')
-          .expect({ id: '1', title: 'first' });
+          .get(`/api/v1/todo-item/${response.body.id}`)
+          .expect({ id: response.body.id, title: 'first' });
       })
       .catch((err) => console.log(`ERROR: ${err.message}`));
   });
 
-  it('/api/v1/todos/0 (PUT) replace todo item - response 200 status', () => {
+  it('/api/v1/todo-item/:id (PATCH) update todo item - response 200 status', () => {
     return request(app.getHttpServer())
-      .post('/api/v1/todos')
-      .send({ id: '1', title: 'first' })
-      .then(() => {
+      .post('/api/v1/todo-item')
+      .send({ title: 'first' })
+      .then((response) => {
         return request(app.getHttpServer())
-          .put('/api/v1/todos/0')
-          .send({ id: '2', title: 'second' })
-          .expect(200);
-      })
-      .catch((err) => console.log(`ERROR: ${err.message}`));
-  });
-
-  it('/api/v1/todos/0 (PUT) replace todo item - item is replaced', () => {
-    return request(app.getHttpServer())
-      .post('/api/v1/todos')
-      .send({ id: '1', title: 'first' })
-      .then(() => {
-        return request(app.getHttpServer())
-          .put('/api/v1/todos/0')
-          .send({ id: '2', title: 'second' })
-          .then(() => {
-            return request(app.getHttpServer())
-              .get('/api/v1/todos/0')
-              .expect({ id: '2', title: 'second' });
-          })
-          .catch((err) => console.log(`ERROR: ${err.message}`));
-      })
-      .catch((err) => console.log(`ERROR: ${err.message}`));
-  });
-
-  it('/api/v1/todos/0 (PATCH) update todo item - response 200 status', () => {
-    return request(app.getHttpServer())
-      .post('/api/v1/todos')
-      .send({ id: '1', title: 'first' })
-      .then(() => {
-        return request(app.getHttpServer())
-          .patch('/api/v1/todos/0')
+          .patch(`/api/v1/todo-item/${response.body.id}`)
           .send({ title: 'second' })
           .expect(200);
       })
       .catch((err) => console.log(`ERROR: ${err.message}`));
   });
 
-  it('/api/v1/todos/0 (PATCH) update todo item - item is updated', () => {
+  it('/api/v1/todo-item/:id (PATCH) update todo item - item is updated', () => {
     return request(app.getHttpServer())
-      .post('/api/v1/todos')
-      .send({ id: '1', title: 'first' })
-      .then(() => {
+      .post('/api/v1/todo-item')
+      .send({ title: 'first' })
+      .then((response) => {
         return request(app.getHttpServer())
-          .patch('/api/v1/todos/0')
+          .patch(`/api/v1/todo-item/${response.body.id}`)
           .send({ title: 'second' })
           .then(() => {
             return request(app.getHttpServer())
-              .get('/api/v1/todos/0')
-              .expect({ id: '1', title: 'second' });
+              .get(`/api/v1/todo-item/${response.body.id}`)
+              .expect({ id: response.body.id, title: 'second' });
           })
           .catch((err) => console.log(`ERROR: ${err.message}`));
       })
       .catch((err) => console.log(`ERROR: ${err.message}`));
   });
 
-  it('/api/v1/todos/0 (DELETE) delete todo item - response 204 status', () => {
+  it('/api/v1/todo-item/:id (DELETE) delete todo item - response 204 status', () => {
     return request(app.getHttpServer())
-      .post('/api/v1/todos')
-      .send({ id: '1', title: 'first' })
-      .then(() => {
+      .post('/api/v1/todo-item')
+      .send({ title: 'first' })
+      .then((response) => {
         return request(app.getHttpServer())
-          .delete('/api/v1/todos/0')
+          .delete(`/api/v1/todo-item/${response.body.id}`)
           .expect(204);
-      })
-      .catch((err) => console.log(`ERROR: ${err.message}`));
-  });
-
-  it('/api/v1/todos (DELETE) delete todo item - item is removed', () => {
-    return request(app.getHttpServer())
-      .post('/api/v1/todos')
-      .send({ id: '1', title: 'first' })
-      .then(() => {
-        return request(app.getHttpServer())
-          .delete('/api/v1/todos/0')
-          .then(() => {
-            return request(app.getHttpServer()).get('/api/v1/todos').expect([]);
-          })
-          .catch((err) => console.log(`ERROR: ${err.message}`));
       })
       .catch((err) => console.log(`ERROR: ${err.message}`));
   });
