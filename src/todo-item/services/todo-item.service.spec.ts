@@ -36,7 +36,7 @@ describe('TodosService', () => {
     expect(repositoryMock.find).toBeCalled();
   });
 
-  it('should return one TodoItem', () => {
+  it('should return one todo-item', () => {
     repositoryMock.findOneBy.mockReturnValue(DUMMY_TODO);
     expect(todosService.getItemById(DUMMY_TODO.id)).toEqual(DUMMY_TODO);
     expect(repositoryMock.findOneBy).toHaveBeenCalledWith({

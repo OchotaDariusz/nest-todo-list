@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { TodoItemModule } from '../src/TodoItem/todo-item.module';
+import { TodoItemModule } from '../src/todo-item/todo-item.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import entities from '../src/TodoItem/entities';
+import entities from '../src/todo-item/entities';
 
 describe('TodoitemsController (e2e)', () => {
   let app: INestApplication;
