@@ -1,40 +1,34 @@
 import { Injectable } from '@nestjs/common';
-import { TodosRepository } from './repositories/todos.repository';
-import { TodoItem } from './interfaces/todos.interface';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { TodoItemEntity } from './typeorm';
+import { TodoItem } from './interfaces/todoitem.interface';
+import { TodoItemDto } from './typeorm/todoitem.dto';
 
 @Injectable()
 export class TodosService {
-  constructor(private readonly todosRepository: TodosRepository) {}
+  constructor(
+    @InjectRepository(TodoItemEntity)
+    private readonly todosRepository: Repository<TodoItem>,
+  ) {}
 
-  getAllItems(): TodoItem[] {
-    return this.todosRepository.getAllData();
+  getAllItems(): Promise<TodoItem[]> {
+    return this.todosRepository.find();
   }
 
-  getItemAtIndex(index: number): TodoItem {
-    return this.todosRepository.getItem(index);
+  getItemById(id: string): Promise<TodoItem> {
+    return this.todosRepository.findOneBy({ id });
   }
 
-  getFirstItem(): TodoItem {
-    return this.todosRepository.getFirstItem();
+  async addNewItem(item: TodoItemDto): Promise<void> {
+    await this.todosRepository.save(item);
   }
 
-  getLastItem(): TodoItem {
-    return this.todosRepository.getLastItem();
+  async updateItem(id: string, item: TodoItemDto): Promise<void> {
+    await this.todosRepository.save({ id, title: item.title });
   }
 
-  addNewItem(item: TodoItem): void {
-    this.todosRepository.addItem(item);
-  }
-
-  replaceItem(index: number, item: TodoItem): void {
-    this.todosRepository.replaceItem(index, item);
-  }
-
-  updateItem(index: number, partialItem: Partial<TodoItem>): void {
-    this.todosRepository.updateItem(index, partialItem);
-  }
-
-  deleteItem(index: number): void {
-    this.todosRepository.deleteItem(index);
+  async deleteItem(id: string): Promise<void> {
+    await this.todosRepository.delete(id);
   }
 }

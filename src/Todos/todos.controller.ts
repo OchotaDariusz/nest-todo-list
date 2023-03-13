@@ -7,52 +7,42 @@ import {
   Param,
   Patch,
   Post,
-  Put,
-  Query,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { TodosService } from './todos.service';
-import { TodoItem } from './interfaces/todos.interface';
+import { TodoItemDto } from './typeorm/todoitem.dto';
 
 @Controller('/api/v1/todos')
 export class TodosController {
   constructor(private readonly todosService: TodosService) {}
 
   @Get()
-  getAllItems(
-    @Query('onlyFirst') onlyFirst?: boolean,
-    @Query('onlyLast') onlyLast?: boolean,
-  ): TodoItem[] | TodoItem {
-    if (onlyFirst) return this.todosService.getFirstItem();
-    if (onlyLast) return this.todosService.getLastItem();
+  getAllItems() {
     return this.todosService.getAllItems();
   }
 
-  @Get('/:index')
-  getItem(@Param() params): TodoItem {
-    return this.todosService.getItemAtIndex(params.index);
+  @Get('/:id')
+  getItem(@Param() params) {
+    return this.todosService.getItemById(params.id);
   }
 
   @Post()
   @HttpCode(201)
-  postNewItem(@Body() itemDto: TodoItem): void {
-    this.todosService.addNewItem(itemDto);
+  @UsePipes(ValidationPipe)
+  postNewItem(@Body() itemDto: TodoItemDto) {
+    return this.todosService.addNewItem(itemDto);
   }
 
-  @Put('/:index')
+  @Patch('/:id')
   @HttpCode(200)
-  putItem(@Param() params, @Body() itemDto: TodoItem): void {
-    this.todosService.replaceItem(params.index, itemDto);
+  patchItem(@Param() params, @Body() partialItem: TodoItemDto) {
+    return this.todosService.updateItem(params.id, partialItem);
   }
 
-  @Patch('/:index')
-  @HttpCode(200)
-  patchItem(@Param() params, @Body() partialItem: Partial<TodoItem>): void {
-    this.todosService.updateItem(params.index, partialItem);
-  }
-
-  @Delete('/:index')
+  @Delete('/:id')
   @HttpCode(204)
-  deleteItem(@Param() params): void {
-    this.todosService.deleteItem(params.index);
+  deleteItem(@Param() params) {
+    return this.todosService.deleteItem(params.id);
   }
 }
