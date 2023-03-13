@@ -10,8 +10,8 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { TodosService } from './todos.service';
-import { TodoItemDto } from './typeorm/todoitem.dto';
+import { TodosService } from '../services/todos.service';
+import { TodoItemDto } from '../dto/todoitem.dto';
 
 @Controller('/api/v1/todos')
 export class TodosController {

@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TodosModule } from './Todos/todos.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import entities from './Todos/typeorm';
+import entities from './Todos/entities';
 
 @Module({
   imports: [

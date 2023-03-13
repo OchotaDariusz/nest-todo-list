@@ -4,7 +4,7 @@ import * as request from 'supertest';
 import { TodosModule } from '../src/Todos/todos.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import entities from '../src/Todos/typeorm';
+import entities from '../src/Todos/entities';
 
 describe('TodosController (e2e)', () => {
   let app: INestApplication;
@@ -89,7 +89,7 @@ describe('TodosController (e2e)', () => {
       .catch((err) => console.log(`ERROR: ${err.message}`));
   });
 
-  it('/api/v1/todos/0 (DELETE) delete todo item - response 204 status', () => {
+  it('/api/v1/todos/:id (DELETE) delete todo item - response 204 status', () => {
     return request(app.getHttpServer())
       .post('/api/v1/todos')
       .send({ title: 'first' })

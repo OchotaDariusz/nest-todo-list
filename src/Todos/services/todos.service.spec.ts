@@ -1,11 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { TodosController } from './todos.controller';
 import { TodosService } from './todos.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { TodoItemEntity } from './typeorm';
+import { TodoItemEntity } from '../entities';
 import repositoryMockFactory, {
   MockType,
-} from '../../mocks/repositoryMockFactory';
+} from '../../../mocks/repositoryMockFactory';
 import { Repository } from 'typeorm';
 
 describe('TodosService', () => {
@@ -18,7 +17,6 @@ describe('TodosService', () => {
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
-      controllers: [TodosController],
       providers: [
         TodosService,
         {
