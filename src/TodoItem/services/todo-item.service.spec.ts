@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { TodosService } from './todos.service';
+import { TodoItemService } from './todo-item.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { TodoItemEntity } from '../entities';
 import repositoryMockFactory, {
@@ -12,13 +12,13 @@ describe('TodosService', () => {
     id: '8e6fffd7-9888-4d62-8d4c-8b4bbff12262',
     title: 'DO THAT',
   };
-  let todosService: TodosService;
+  let todosService: TodoItemService;
   let repositoryMock: MockType<Repository<TodoItemEntity>>;
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       providers: [
-        TodosService,
+        TodoItemService,
         {
           provide: getRepositoryToken(TodoItemEntity),
           useFactory: repositoryMockFactory,
@@ -26,7 +26,7 @@ describe('TodosService', () => {
       ],
     }).compile();
 
-    todosService = app.get<TodosService>(TodosService);
+    todosService = app.get<TodoItemService>(TodoItemService);
     repositoryMock = app.get(getRepositoryToken(TodoItemEntity));
   });
 

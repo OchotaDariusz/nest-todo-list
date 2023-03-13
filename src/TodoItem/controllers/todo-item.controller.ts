@@ -10,12 +10,12 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { TodosService } from '../services/todos.service';
-import { TodoItemDto } from '../dto/todoitem.dto';
+import { TodoItemService } from '../services/todo-item.service';
+import { TodoItemDto } from '../dto/todo-item.dto';
 
-@Controller('/api/v1/todos')
-export class TodosController {
-  constructor(private readonly todosService: TodosService) {}
+@Controller('/api/v1/todo-item')
+export class TodoItemController {
+  constructor(private readonly todosService: TodoItemService) {}
 
   @Get()
   getAllItems() {

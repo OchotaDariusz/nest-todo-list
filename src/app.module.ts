@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { TodosModule } from './Todos/todos.module';
+import { TodoItemModule } from './TodoItem/todo-item.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import entities from './Todos/entities';
+import entities from './TodoItem/entities';
 
 @Module({
   imports: [
@@ -21,7 +21,7 @@ import entities from './Todos/entities';
       }),
       inject: [ConfigService],
     }),
-    TodosModule,
+    TodoItemModule,
   ],
 })
 export class AppModule {}

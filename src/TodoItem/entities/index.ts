@@ -1,4 +1,4 @@
-import { TodoItemEntity } from './todoitem.entity';
+import { TodoItemEntity } from './todo-item.entity';
 
 const entities = [TodoItemEntity];
 
