@@ -1,63 +1,48 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TodosController } from './todos.controller';
 import { TodosService } from './todos.service';
-import { TodoItem } from './interfaces/todoitem.interface';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { TodoItemEntity } from './typeorm';
+import repositoryMockFactory, {
+  MockType,
+} from '../../mocks/repositoryMockFactory';
+import { Repository } from 'typeorm';
 
-describe('TodosController', () => {
-  let todosController: TodosController;
+describe('TodosService', () => {
+  const DUMMY_TODO = {
+    id: '8e6fffd7-9888-4d62-8d4c-8b4bbff12262',
+    title: 'DO THAT',
+  };
+  let todosService: TodosService;
+  let repositoryMock: MockType<Repository<TodoItemEntity>>;
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [TodosController],
-      providers: [TodosService],
+      providers: [
+        TodosService,
+        {
+          provide: getRepositoryToken(TodoItemEntity),
+          useFactory: repositoryMockFactory,
+        },
+      ],
     }).compile();
 
-    todosController = app.get<TodosController>(TodosController);
+    todosService = app.get<TodosService>(TodosService);
+    repositoryMock = app.get(getRepositoryToken(TodoItemEntity));
   });
 
-  describe('GET', () => {
-    it('should return empty array', () => {
-      todosController
-        .getAllItems()
-        .then((allItems: TodoItem[]) => expect(allItems).toStrictEqual([]));
-    });
+  it('should return array of todos', () => {
+    repositoryMock.find.mockReturnValue([DUMMY_TODO]);
+    expect(todosService.getAllItems()).toEqual([DUMMY_TODO]);
+    expect(repositoryMock.find).toBeCalled();
   });
 
-  describe('POST', () => {
-    it('should return one item', () => {
-      todosController.postNewItem({ title: 'first' }).then(() => {
-        todosController
-          .getAllItems()
-          .then((allItems: TodoItem[]) =>
-            expect(allItems.length).toStrictEqual(1),
-          );
-      });
-    });
-  });
-
-  describe('PATCH', () => {
-    it('should return updated item', () => {
-      todosController.postNewItem({ title: 'first' }).then(() => {
-        todosController.patchItem(0, { title: 'second' }).then(() => {
-          todosController
-            .getItem(0)
-            .then((item: TodoItem) =>
-              expect(item.title).toStrictEqual('second'),
-            );
-        });
-      });
-    });
-  });
-
-  describe('DELETE', () => {
-    it('should remove item', () => {
-      todosController.postNewItem({ title: 'first' }).then(() => {
-        todosController.deleteItem(0).then(() => {
-          todosController
-            .getAllItems()
-            .then((allItems: TodoItem[]) => expect(allItems).toStrictEqual([]));
-        });
-      });
+  it('should return one TodoItem', () => {
+    repositoryMock.findOneBy.mockReturnValue(DUMMY_TODO);
+    expect(todosService.getItemById(DUMMY_TODO.id)).toEqual(DUMMY_TODO);
+    expect(repositoryMock.findOneBy).toHaveBeenCalledWith({
+      id: DUMMY_TODO.id,
     });
   });
 });
