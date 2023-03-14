@@ -58,7 +58,7 @@ describe('TodoitemsController (e2e)', () => {
       .catch((err) => console.log(`ERROR: ${err.message}`));
   });
 
-  it('/api/v1/todo-item/:id (PATCH) update todo item - response 200 status', () => {
+  it('/api/v1/todo-item/:uuid (PATCH) update todo item - response 200 status', () => {
     return request(app.getHttpServer())
       .post('/api/v1/todo-item')
       .send({ title: 'first' })
@@ -71,7 +71,7 @@ describe('TodoitemsController (e2e)', () => {
       .catch((err) => console.log(`ERROR: ${err.message}`));
   });
 
-  it('/api/v1/todo-item/:id (PATCH) update todo item - item is updated', () => {
+  it('/api/v1/todo-item/:uuid (PATCH) update todo item - item is updated', () => {
     return request(app.getHttpServer())
       .post('/api/v1/todo-item')
       .send({ title: 'first' })
@@ -89,7 +89,7 @@ describe('TodoitemsController (e2e)', () => {
       .catch((err) => console.log(`ERROR: ${err.message}`));
   });
 
-  it('/api/v1/todo-item/:id (DELETE) delete todo item - response 204 status', () => {
+  it('/api/v1/todo-item/:uuid (DELETE) delete todo item - response 204 status', () => {
     return request(app.getHttpServer())
       .post('/api/v1/todo-item')
       .send({ title: 'first' })

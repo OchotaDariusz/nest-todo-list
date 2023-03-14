@@ -5,6 +5,7 @@ import {
   Get,
   HttpCode,
   Param,
+  ParseUUIDPipe,
   Patch,
   Post,
   UsePipes,
@@ -22,9 +23,9 @@ export class TodoItemController {
     return this.todosService.getAllItems();
   }
 
-  @Get('/:id')
-  getItem(@Param() params) {
-    return this.todosService.getItemById(params.id);
+  @Get('/:uuid')
+  getItem(@Param('uuid', new ParseUUIDPipe()) uuid: string) {
+    return this.todosService.getItemById(uuid);
   }
 
   @Post()
@@ -34,15 +35,18 @@ export class TodoItemController {
     return this.todosService.addNewItem(itemDto);
   }
 
-  @Patch('/:id')
+  @Patch('/:uuid')
   @HttpCode(200)
-  patchItem(@Param() params, @Body() partialItem: TodoItemDto) {
-    return this.todosService.updateItem(params.id, partialItem);
+  patchItem(
+    @Param('uuid', new ParseUUIDPipe()) uuid: string,
+    @Body() partialItem: TodoItemDto,
+  ) {
+    return this.todosService.updateItem(uuid, partialItem);
   }
 
-  @Delete('/:id')
+  @Delete('/:uuid')
   @HttpCode(204)
-  deleteItem(@Param() params) {
-    return this.todosService.deleteItem(params.id);
+  deleteItem(@Param('uuid', new ParseUUIDPipe()) uuid: string) {
+    return this.todosService.deleteItem(uuid);
   }
 }
