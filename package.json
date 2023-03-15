@@ -1,6 +1,6 @@
 {
   "name": "products",
-  "version": "0.5.1",
+  "version": "0.6.1",
   "description": "Simple NestJS REST API",
   "author": "Dariusz Ochota",
   "private": true,

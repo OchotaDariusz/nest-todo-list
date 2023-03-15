@@ -6,7 +6,7 @@ import {
   SwaggerModule,
 } from '@nestjs/swagger';
 
-async function bootstrap() {
+async function bootstrap(): Promise<{ port: number; hostname: string }> {
   const app = await NestFactory.create(AppModule);
 
   const config = new DocumentBuilder()
@@ -20,7 +20,15 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config, options);
   SwaggerModule.setup('api', app, document);
 
-  await app.listen(3000);
+  const port = Number(process.env.PORT) || 3000;
+  const hostname = process.env.HOSTNAME || 'localhost';
+
+  await app.listen(port, hostname);
+  return { port, hostname };
 }
 
-bootstrap();
+bootstrap()
+  .then(({ port, hostname }) =>
+    console.info(`Server is running at ${hostname}:${port}`),
+  )
+  .catch((err) => console.error(err.message));
