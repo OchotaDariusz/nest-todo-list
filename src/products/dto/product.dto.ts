@@ -1,13 +1,14 @@
 import { IsNotEmpty, MinLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class TodoItemDto {
+export class ProductDto {
   @ApiProperty({
-    description: 'The Todo title',
+    description: 'Product name',
+    type: String,
     minimum: 3,
-    default: '',
+    default: 'product_name',
   })
   @IsNotEmpty()
   @MinLength(3)
-  title: string;
+  name: string;
 }

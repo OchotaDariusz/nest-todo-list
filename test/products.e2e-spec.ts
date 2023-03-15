@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { TodoItemModule } from '../src/todo-item/todo-item.module';
+import { ProductsModule } from '../src/products/products.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import entities from '../src/todo-item/entities';
+import entities from '../src/products/entities';
 
-describe('TodoitemsController (e2e)', () => {
+describe('ProductsController (e2e)', () => {
   let app: INestApplication;
 
   beforeEach(async () => {
@@ -27,7 +27,7 @@ describe('TodoitemsController (e2e)', () => {
           }),
           inject: [ConfigService],
         }),
-        TodoItemModule,
+        ProductsModule,
       ],
     }).compile();
 
@@ -35,67 +35,67 @@ describe('TodoitemsController (e2e)', () => {
     await app.init();
   });
 
-  it('/api/v1/todo-item (GET) - response 200 status', () => {
-    return request(app.getHttpServer()).get('/api/v1/todo-item').expect(200);
+  it('/api/v1/products (GET) - response 200 status', () => {
+    return request(app.getHttpServer()).get('/api/v1/products').expect(200);
   });
 
-  it('/api/v1/todo-item (POST) add todo item - response 201 status', () => {
+  it('/api/v1/products (POST) add product - response 201 status', () => {
     return request(app.getHttpServer())
-      .post('/api/v1/todo-item')
-      .send({ title: 'first' })
+      .post('/api/v1/products')
+      .send({ name: 'first' })
       .expect(201);
   });
 
-  it('/api/v1/todo-item (POST) add todo item - item is added', () => {
+  it('/api/v1/products (POST) add product - product is added', () => {
     return request(app.getHttpServer())
-      .post('/api/v1/todo-item')
-      .send({ title: 'first' })
+      .post('/api/v1/products')
+      .send({ name: 'first' })
       .then((response) => {
         return request(app.getHttpServer())
-          .get(`/api/v1/todo-item/${response.body.id}`)
-          .expect({ id: response.body.id, title: 'first' });
+          .get(`/api/v1/products/${response.body.id}`)
+          .expect({ id: response.body.id, name: 'first' });
       })
       .catch((err) => console.log(`ERROR: ${err.message}`));
   });
 
-  it('/api/v1/todo-item/:uuid (PATCH) update todo item - response 200 status', () => {
+  it('/api/v1/products/:uuid (PATCH) update product - response 200 status', () => {
     return request(app.getHttpServer())
-      .post('/api/v1/todo-item')
-      .send({ title: 'first' })
+      .post('/api/v1/products')
+      .send({ name: 'first' })
       .then((response) => {
         return request(app.getHttpServer())
-          .patch(`/api/v1/todo-item/${response.body.id}`)
-          .send({ title: 'second' })
+          .patch(`/api/v1/products/${response.body.id}`)
+          .send({ name: 'second' })
           .expect(200);
       })
       .catch((err) => console.log(`ERROR: ${err.message}`));
   });
 
-  it('/api/v1/todo-item/:uuid (PATCH) update todo item - item is updated', () => {
+  it('/api/v1/products/:uuid (PATCH) update product - product is updated', () => {
     return request(app.getHttpServer())
-      .post('/api/v1/todo-item')
-      .send({ title: 'first' })
+      .post('/api/v1/products')
+      .send({ name: 'first' })
       .then((response) => {
         return request(app.getHttpServer())
-          .patch(`/api/v1/todo-item/${response.body.id}`)
-          .send({ title: 'second' })
+          .patch(`/api/v1/products/${response.body.id}`)
+          .send({ name: 'second' })
           .then(() => {
             return request(app.getHttpServer())
-              .get(`/api/v1/todo-item/${response.body.id}`)
-              .expect({ id: response.body.id, title: 'second' });
+              .get(`/api/v1/products/${response.body.id}`)
+              .expect({ id: response.body.id, name: 'second' });
           })
           .catch((err) => console.log(`ERROR: ${err.message}`));
       })
       .catch((err) => console.log(`ERROR: ${err.message}`));
   });
 
-  it('/api/v1/todo-item/:uuid (DELETE) delete todo item - response 204 status', () => {
+  it('/api/v1/products/:uuid (DELETE) delete product - response 204 status', () => {
     return request(app.getHttpServer())
-      .post('/api/v1/todo-item')
-      .send({ title: 'first' })
+      .post('/api/v1/products')
+      .send({ name: 'first' })
       .then((response) => {
         return request(app.getHttpServer())
-          .delete(`/api/v1/todo-item/${response.body.id}`)
+          .delete(`/api/v1/products/${response.body.id}`)
           .expect(204);
       })
       .catch((err) => console.log(`ERROR: ${err.message}`));
