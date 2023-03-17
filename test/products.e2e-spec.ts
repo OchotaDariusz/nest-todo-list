@@ -43,7 +43,13 @@ describe('ProductsController (e2e)', () => {
     return request(app.getHttpServer())
       .post('/api/v1/products')
       .send({ name: 'first' })
-      .expect(201);
+      .expect(201)
+      .then((response) => {
+        return request(app.getHttpServer()).delete(
+          `/api/v1/products/${response.body.id}`,
+        );
+      })
+      .catch((err) => console.log(`ERROR: ${err.message}`));
   });
 
   it('/api/v1/products (POST) add product - product is added', () => {
@@ -53,7 +59,13 @@ describe('ProductsController (e2e)', () => {
       .then((response) => {
         return request(app.getHttpServer())
           .get(`/api/v1/products/${response.body.id}`)
-          .expect({ id: response.body.id, name: 'first' });
+          .expect({ id: response.body.id, name: 'first' })
+          .then(() => {
+            return request(app.getHttpServer()).delete(
+              `/api/v1/products/${response.body.id}`,
+            );
+          })
+          .catch((err) => console.log(`ERROR: ${err.message}`));
       })
       .catch((err) => console.log(`ERROR: ${err.message}`));
   });
@@ -66,7 +78,13 @@ describe('ProductsController (e2e)', () => {
         return request(app.getHttpServer())
           .patch(`/api/v1/products/${response.body.id}`)
           .send({ name: 'second' })
-          .expect(200);
+          .expect(200)
+          .then(() => {
+            return request(app.getHttpServer()).delete(
+              `/api/v1/products/${response.body.id}`,
+            );
+          })
+          .catch((err) => console.log(`ERROR: ${err.message}`));
       })
       .catch((err) => console.log(`ERROR: ${err.message}`));
   });
@@ -82,7 +100,13 @@ describe('ProductsController (e2e)', () => {
           .then(() => {
             return request(app.getHttpServer())
               .get(`/api/v1/products/${response.body.id}`)
-              .expect({ id: response.body.id, name: 'second' });
+              .expect({ id: response.body.id, name: 'second' })
+              .then(() => {
+                return request(app.getHttpServer()).delete(
+                  `/api/v1/products/${response.body.id}`,
+                );
+              })
+              .catch((err) => console.log(`ERROR: ${err.message}`));
           })
           .catch((err) => console.log(`ERROR: ${err.message}`));
       })

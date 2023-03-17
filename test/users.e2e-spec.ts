@@ -47,7 +47,13 @@ describe('UsersController (e2e)', () => {
         password:
           '$2b$10$mg7KG9fSZaHbOU0EZzSYk.I20qiYB/AAbSOtb37kODVTXWQVLEmCm',
       })
-      .expect(201);
+      .expect(201)
+      .then((response) => {
+        return request(app.getHttpServer()).delete(
+          `/api/v1/users/${response.body.id}`,
+        );
+      })
+      .catch((err) => console.log(`ERROR: ${err.message}`));
   });
 
   it('/api/v1/users (POST) add user - user is added', () => {
@@ -61,7 +67,13 @@ describe('UsersController (e2e)', () => {
       .then((response) => {
         return request(app.getHttpServer())
           .get(`/api/v1/users/${response.body.id}`)
-          .expect({ id: response.body.id, username: 'user' });
+          .expect({ id: response.body.id, username: 'user' })
+          .then(() => {
+            return request(app.getHttpServer()).delete(
+              `/api/v1/users/${response.body.id}`,
+            );
+          })
+          .catch((err) => console.log(`ERROR: ${err.message}`));
       })
       .catch((err) => console.log(`ERROR: ${err.message}`));
   });
@@ -78,7 +90,13 @@ describe('UsersController (e2e)', () => {
         return request(app.getHttpServer())
           .patch(`/api/v1/users/${response.body.id}`)
           .send({ username: 'newName' })
-          .expect(200);
+          .expect(200)
+          .then(() => {
+            return request(app.getHttpServer()).delete(
+              `/api/v1/users/${response.body.id}`,
+            );
+          })
+          .catch((err) => console.log(`ERROR: ${err.message}`));
       })
       .catch((err) => console.log(`ERROR: ${err.message}`));
   });
@@ -98,7 +116,13 @@ describe('UsersController (e2e)', () => {
           .then(() => {
             return request(app.getHttpServer())
               .get(`/api/v1/users/${response.body.id}`)
-              .expect({ id: response.body.id, username: 'newName' });
+              .expect({ id: response.body.id, username: 'newName' })
+              .then(() => {
+                return request(app.getHttpServer()).delete(
+                  `/api/v1/users/${response.body.id}`,
+                );
+              })
+              .catch((err) => console.log(`ERROR: ${err.message}`));
           })
           .catch((err) => console.log(`ERROR: ${err.message}`));
       })

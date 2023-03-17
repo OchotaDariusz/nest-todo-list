@@ -12,8 +12,23 @@ export class UsersService {
     private readonly userRepository: Repository<UserEntity>,
   ) {}
 
-  getAllUsers(): Promise<User[]> {
-    return this.userRepository.find();
+  private stripUserPassword(user: User): User {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...userDetails } = user;
+    return userDetails;
+  }
+
+  private async saveToRepository(user: User) {
+    const savedUser = await this.userRepository.save(user);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    return this.stripUserPassword(savedUser);
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    const users = await this.userRepository.find();
+    return users.map((user) => {
+      return this.stripUserPassword(user);
+    });
   }
 
   async getUserByUsername(username: string): Promise<User> {
@@ -21,7 +36,7 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException("Can't find that user.");
     }
-    return user;
+    return this.stripUserPassword(user);
   }
 
   async getUserById(id: string): Promise<User> {
@@ -29,16 +44,15 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException("Can't find that user.");
     }
-    return user;
+    return this.stripUserPassword(user);
   }
 
   async addNewUser(user: User): Promise<User> {
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(user.password, salt);
     const newUser = { ...user, password: hashedPassword };
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, ...addedUser } = await this.userRepository.save(newUser);
-    return addedUser;
+    const addedUser = await this.saveToRepository(newUser);
+    return this.stripUserPassword(addedUser);
   }
 
   async updateUser(id: string, updateDetails: User): Promise<User> {
@@ -48,7 +62,8 @@ export class UsersService {
     }
     if ('username' in updateDetails) user.username = updateDetails.username;
     if ('password' in updateDetails) user.password = updateDetails.password;
-    return await this.userRepository.save(user);
+    const updatedUser = await this.saveToRepository(user);
+    return this.stripUserPassword(updatedUser);
   }
 
   async deleteUser(id: string): Promise<void> {
