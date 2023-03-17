@@ -14,7 +14,7 @@ export class UserDto {
   @ApiProperty({
     description: 'Username password',
     minimum: 8,
-    default: 'password_here',
+    default: '$2b$10$mg7KG9fSZaHbOU0EZzSYk.I20qiYB/AAbSOtb37kODVTXWQVLEmCm',
   })
   @IsNotEmpty()
   @MinLength(8)

@@ -36,7 +36,9 @@ export class UsersService {
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(user.password, salt);
     const newUser = { ...user, password: hashedPassword };
-    return await this.userRepository.save(newUser);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...addedUser } = await this.userRepository.save(newUser);
+    return addedUser;
   }
 
   async updateUser(id: string, updateDetails: User): Promise<User> {
@@ -44,8 +46,8 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException("Can't find user to update.");
     }
-    user.username = updateDetails.username;
-    user.password = updateDetails.password;
+    if ('username' in updateDetails) user.username = updateDetails.username;
+    if ('password' in updateDetails) user.password = updateDetails.password;
     return await this.userRepository.save(user);
   }
 
