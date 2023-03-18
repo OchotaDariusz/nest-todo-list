@@ -1,4 +1,5 @@
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Role } from '../../auth/roles/role.enum';
 
 @Entity({ name: 'users' })
 export class UserEntity extends BaseEntity {
@@ -13,7 +14,15 @@ export class UserEntity extends BaseEntity {
 
   @Column({
     nullable: false,
-    default: 'password_here',
+    default: '$2b$10$mg7KG9fSZaHbOU0EZzSYk.I20qiYB/AAbSOtb37kODVTXWQVLEmCm',
   })
   password: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: false,
+    default: [Role.USER],
+    array: true,
+  })
+  roles: Role[];
 }

@@ -4,6 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 import { UserEntity } from './entities/user.entity';
 import { User } from './interfaces/user.interface';
+import { Role } from '../auth/roles/role.enum';
 
 @Injectable()
 export class UsersService {
@@ -51,6 +52,7 @@ export class UsersService {
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(user.password, salt);
     const newUser = { ...user, password: hashedPassword };
+    newUser.roles = [Role.USER];
     const addedUser = await this.saveToRepository(newUser);
     return this.stripUserPassword(addedUser);
   }
@@ -61,7 +63,10 @@ export class UsersService {
       throw new NotFoundException("Can't find user to update.");
     }
     if ('username' in updateDetails) user.username = updateDetails.username;
-    if ('password' in updateDetails) user.password = updateDetails.password;
+    if ('password' in updateDetails) {
+      const salt = await bcrypt.genSalt();
+      user.password = await bcrypt.hash(updateDetails.password, salt);
+    }
     const updatedUser = await this.saveToRepository(user);
     return this.stripUserPassword(updatedUser);
   }
