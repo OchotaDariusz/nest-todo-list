@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthModule } from './auth/auth.module';
-import { ProductsModule } from './products/products.module';
-import entities from './entities';
-import { UsersModule } from './users/users.module';
 import { APP_GUARD } from '@nestjs/core';
+
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
+import { ProductsModule } from './products/products.module';
 import { RolesGuard } from './auth/roles/roles.guard';
+import entities from './entities';
 
 @Module({
   imports: [

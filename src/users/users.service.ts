@@ -1,10 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
+
+import { Role } from '../auth/roles/role.enum';
 import { UserEntity } from './entities/user.entity';
 import { User } from './interfaces/user.interface';
-import { Role } from '../auth/roles/role.enum';
 
 @Injectable()
 export class UsersService {

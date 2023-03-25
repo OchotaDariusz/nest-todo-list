@@ -12,7 +12,7 @@ describe('UsersController (e2e)', () => {
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
-        ConfigModule.forRoot({ isGlobal: true }),
+        ConfigModule.forRoot({ envFilePath: '.env.development' }),
         TypeOrmModule.forRootAsync({
           imports: [ConfigModule],
           useFactory: (configService: ConfigService) => ({
@@ -67,7 +67,7 @@ describe('UsersController (e2e)', () => {
       .then((response) => {
         return request(app.getHttpServer())
           .get(`/api/v1/users/${response.body.id}`)
-          .expect({ id: response.body.id, username: 'user' })
+          .expect({ id: response.body.id, username: 'user', roles: ['user'] })
           .then(() => {
             return request(app.getHttpServer()).delete(
               `/api/v1/users/${response.body.id}`,
@@ -116,7 +116,11 @@ describe('UsersController (e2e)', () => {
           .then(() => {
             return request(app.getHttpServer())
               .get(`/api/v1/users/${response.body.id}`)
-              .expect({ id: response.body.id, username: 'newName' })
+              .expect({
+                id: response.body.id,
+                username: 'newName',
+                roles: ['user'],
+              })
               .then(() => {
                 return request(app.getHttpServer()).delete(
                   `/api/v1/users/${response.body.id}`,

@@ -1,4 +1,5 @@
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+
 import { Product } from '../interfaces/product.interface';
 
 @Entity({ name: 'products' })

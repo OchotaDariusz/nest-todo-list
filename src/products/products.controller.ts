@@ -11,8 +11,9 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { ProductsService } from './products.service';
+
 import { ProductDto } from './dto/product.dto';
+import { ProductsService } from './products.service';
 
 @Controller('/api/v1/products')
 export class ProductsController {

@@ -1,4 +1,5 @@
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+
 import { Role } from '../../auth/roles/role.enum';
 
 @Entity({ name: 'users' })

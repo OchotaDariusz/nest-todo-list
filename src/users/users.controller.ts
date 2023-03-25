@@ -11,11 +11,12 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { UserDto } from './dto/user.dto';
-import { UserUpdateDto } from './dto/user-update.dto';
+
 import { Roles } from '../auth/roles/roles.decorator';
 import { Role } from '../auth/roles/role.enum';
+import { UserDto } from './dto/user.dto';
+import { UserUpdateDto } from './dto/user-update.dto';
+import { UsersService } from './users.service';
 
 @Controller('/api/v1/users')
 export class UsersController {
