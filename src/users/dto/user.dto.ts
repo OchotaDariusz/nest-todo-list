@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, MinLength } from 'class-validator';
+import { Role } from '../../auth/roles/role.enum';
 
 export class UserDto {
   @ApiProperty({
@@ -19,4 +20,10 @@ export class UserDto {
   @IsNotEmpty()
   @MinLength(8)
   password: string;
+
+  @ApiProperty({
+    description: 'User roles',
+    default: ['user'],
+  })
+  roles?: Role[];
 }

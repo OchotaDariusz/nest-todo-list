@@ -38,7 +38,7 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException("Can't find that user.");
     }
-    return this.stripUserPassword(user);
+    return user;
   }
 
   async getUserById(id: string): Promise<User> {

@@ -29,6 +29,7 @@ export class UsersController {
   }
 
   @Get('/:uuid')
+  @Roles(Role.ADMIN)
   getUser(@Param('uuid', new ParseUUIDPipe()) uuid: string) {
     return this.userService.getUserById(uuid);
   }
