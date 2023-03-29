@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -49,26 +53,42 @@ export class UsersService {
     return this.stripUserPassword(user);
   }
 
-  async addNewUser(user: User): Promise<User> {
+  async addNewUser(newUserDetails: User): Promise<User> {
+    const user = await this.userRepository.findOneBy({
+      username: newUserDetails.username,
+    });
+    if (user) {
+      throw new ConflictException('User already exists!');
+    }
+
     const salt = await bcrypt.genSalt();
-    const hashedPassword = await bcrypt.hash(user.password, salt);
-    const newUser = { ...user, password: hashedPassword };
+    const hashedPassword = await bcrypt.hash(newUserDetails.password, salt);
+    const newUser = { ...newUserDetails, password: hashedPassword };
     newUser.roles = [Role.USER];
     const addedUser = await this.saveToRepository(newUser);
     return this.stripUserPassword(addedUser);
   }
 
   async updateUser(id: string, updateDetails: User): Promise<User> {
-    const user = await this.userRepository.findOneBy({ id });
-    if (!user) {
+    const userToUpdate = await this.userRepository.findOneBy({ id });
+    if (!userToUpdate) {
       throw new NotFoundException("Can't find user to update.");
     }
-    if ('username' in updateDetails) user.username = updateDetails.username;
+
+    const user = await this.userRepository.findOneBy({
+      username: updateDetails.username,
+    });
+    if (user) {
+      throw new ConflictException('User with such username already exists!');
+    }
+
+    if ('username' in updateDetails)
+      userToUpdate.username = updateDetails.username;
     if ('password' in updateDetails) {
       const salt = await bcrypt.genSalt();
-      user.password = await bcrypt.hash(updateDetails.password, salt);
+      userToUpdate.password = await bcrypt.hash(updateDetails.password, salt);
     }
-    const updatedUser = await this.saveToRepository(user);
+    const updatedUser = await this.saveToRepository(userToUpdate);
     return this.stripUserPassword(updatedUser);
   }
 
