@@ -10,10 +10,14 @@ import {
 } from '@nestjs/common';
 
 import { AuthService } from './auth.service';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { UserDto } from '../users/dto/user.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
+import { Roles } from './roles/roles.decorator';
+import { Role } from './roles/role.enum';
+import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('auth')
+@ApiSecurity('bearer')
 @Controller('/api/v1/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -32,7 +36,7 @@ export class AuthController {
   }
 
   @Get('/current')
-  @UseGuards(JwtAuthGuard)
+  @Roles(Role.ADMIN, Role.USER)
   getCurrentUser(@Request() req) {
     return req.user;
   }

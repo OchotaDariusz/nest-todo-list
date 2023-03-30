@@ -14,6 +14,10 @@ async function bootstrap(): Promise<{ port: number; hostname: string }> {
   const app = await NestFactory.create(AppModule);
 
   const config = new DocumentBuilder()
+    .addSecurity('bearer', {
+      type: 'http',
+      scheme: 'bearer',
+    })
     .setTitle('Products')
     .setDescription('REST API')
     .setVersion('1.0')

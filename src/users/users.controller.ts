@@ -11,6 +11,7 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
+import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 
 import { Roles } from '../auth/roles/roles.decorator';
 import { Role } from '../auth/roles/role.enum';
@@ -18,6 +19,8 @@ import { UserDto } from './dto/user.dto';
 import { UserUpdateDto } from './dto/user-update.dto';
 import { UsersService } from './users.service';
 
+@ApiTags('users')
+@ApiSecurity('bearer')
 @Controller('/api/v1/users')
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
@@ -43,6 +46,7 @@ export class UsersController {
   }
 
   @Patch('/:uuid')
+  @Roles(Role.ADMIN)
   @HttpCode(200)
   @UsePipes(ValidationPipe)
   patchUser(
