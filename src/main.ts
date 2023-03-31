@@ -1,19 +1,42 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import {
+  DocumentBuilder,
+  SwaggerDocumentOptions,
+  SwaggerModule,
+} from '@nestjs/swagger';
+import * as dotenv from 'dotenv';
 
-async function bootstrap() {
+import { AppModule } from './app.module';
+
+dotenv.config();
+
+async function bootstrap(): Promise<{ port: number; hostname: string }> {
   const app = await NestFactory.create(AppModule);
 
   const config = new DocumentBuilder()
-    .setTitle('Todo List')
-    .setDescription('Todo List API')
+    .addSecurity('bearer', {
+      type: 'http',
+      scheme: 'bearer',
+    })
+    .setTitle('Products')
+    .setDescription('REST API')
     .setVersion('1.0')
     .build();
-  const document = SwaggerModule.createDocument(app, config);
+  const options: SwaggerDocumentOptions = {
+    operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,
+  };
+  const document = SwaggerModule.createDocument(app, config, options);
   SwaggerModule.setup('api', app, document);
 
-  await app.listen(3000);
+  const port = Number(process.env.PORT) || 3000;
+  const hostname = process.env.HOSTNAME || 'localhost';
+
+  await app.listen(port, hostname);
+  return { port, hostname };
 }
 
-bootstrap();
+bootstrap()
+  .then(({ port, hostname }) =>
+    console.info(`Server is running at ${hostname}:${port}`),
+  )
+  .catch((err) => console.error(err.message));
