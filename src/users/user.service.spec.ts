@@ -3,20 +3,20 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { UserEntity } from './entities/user.entity';
-import { UsersService } from './users.service';
+import { UserService } from './user.service';
 import {
   MockType,
   repositoryMockFactory,
 } from '../../test/mocks/repository-mock-factory';
 
-describe('UserService', () => {
-  let service: UsersService;
+describe('UsersService', () => {
+  let service: UserService;
   let repositoryMock: MockType<Repository<UserEntity>>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        UsersService,
+        UserService,
         // Provide your mock instead of the actual repository
         {
           provide: getRepositoryToken(UserEntity),
@@ -24,8 +24,12 @@ describe('UserService', () => {
         },
       ],
     }).compile();
-    service = module.get<UsersService>(UsersService);
+    service = module.get<UserService>(UserService);
     repositoryMock = module.get(getRepositoryToken(UserEntity));
+  });
+
+  it('should be defined', () => {
+    expect(service).toBeDefined();
   });
 
   it('should find a user by username', async () => {

@@ -6,7 +6,7 @@ import { ProductEntity } from './entities/product.entity';
 import { Product } from './interfaces/product.interface';
 
 @Injectable()
-export class ProductsService {
+export class ProductService {
   constructor(
     @InjectRepository(ProductEntity)
     private readonly productRepository: Repository<ProductEntity>,

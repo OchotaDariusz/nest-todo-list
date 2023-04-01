@@ -17,13 +17,13 @@ import { Roles } from '../auth/roles/roles.decorator';
 import { Role } from '../auth/roles/role.enum';
 import { UserDto } from './dto/user.dto';
 import { UserUpdateDto } from './dto/user-update.dto';
-import { UsersService } from './users.service';
+import { UserService } from './user.service';
 
 @ApiTags('users')
 @ApiSecurity('bearer')
-@Controller('/api/v1/users')
-export class UsersController {
-  constructor(private readonly userService: UsersService) {}
+@Controller('/api/v1/user')
+export class UserController {
+  constructor(private readonly userService: UserService) {}
 
   @Get()
   @Roles(Role.ADMIN)

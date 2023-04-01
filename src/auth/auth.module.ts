@@ -6,8 +6,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { UserEntity } from '../users/entities/user.entity';
-import { UsersModule } from '../users/users.module';
-import { UsersService } from '../users/users.service';
+import { UserModule } from '../users/user.module';
+import { UserService } from '../users/user.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
 import { RolesGuard } from './roles/roles.guard';
@@ -15,7 +15,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    UsersModule,
+    UserModule,
     PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -28,13 +28,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     TypeOrmModule.forFeature([UserEntity]),
   ],
   controllers: [AuthController],
-  providers: [
-    AuthService,
-    JwtStrategy,
-    LocalStrategy,
-    RolesGuard,
-    UsersService,
-  ],
+  providers: [AuthService, JwtStrategy, LocalStrategy, RolesGuard, UserService],
   exports: [AuthService, JwtModule, JwtStrategy],
 })
 export class AuthModule {}

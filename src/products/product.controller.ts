@@ -16,13 +16,13 @@ import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { Role } from '../auth/roles/role.enum';
 import { Roles } from '../auth/roles/roles.decorator';
 import { ProductDto } from './dto/product.dto';
-import { ProductsService } from './products.service';
+import { ProductService } from './product.service';
 
 @ApiTags('products')
 @ApiSecurity('bearer')
-@Controller('/api/v1/products')
-export class ProductsController {
-  constructor(private readonly productsService: ProductsService) {}
+@Controller('/api/v1/product')
+export class ProductController {
+  constructor(private readonly productsService: ProductService) {}
 
   @Get()
   @Roles(Role.ADMIN, Role.USER)

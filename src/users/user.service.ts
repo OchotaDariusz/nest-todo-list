@@ -12,7 +12,7 @@ import { UserEntity } from './entities/user.entity';
 import { User } from './interfaces/user.interface';
 
 @Injectable()
-export class UsersService {
+export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,

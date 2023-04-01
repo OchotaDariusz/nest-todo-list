@@ -4,8 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { APP_GUARD } from '@nestjs/core';
 
 import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
-import { ProductsModule } from './products/products.module';
+import { UserModule } from './users/user.module';
+import { ProductModule } from './products/product.module';
 import { RolesGuard } from './auth/roles/roles.guard';
 import entities from './entities';
 
@@ -27,8 +27,8 @@ import entities from './entities';
       inject: [ConfigService],
     }),
     AuthModule,
-    ProductsModule,
-    UsersModule,
+    ProductModule,
+    UserModule,
   ],
   providers: [
     {
